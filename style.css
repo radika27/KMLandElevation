@@ -1,0 +1,81 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f6f6f6;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 80%;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.file-upload-section {
+    width: 100%;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.map-section {
+    width: 100%;
+    height: 300px;
+    position: relative;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+    z-index: 1; /* Pastikan peta Leaflet di atas gambar */
+}
+
+.map-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0; /* Gambar di bawah peta */
+}
+
+.info-section {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    width: 100%;
+    text-align: center;
+    margin-top: 20px;
+}
+
+h1 {
+    font-size: 24px;
+    margin: 10px 0;
+}
+
+p {
+    margin: 10px 0;
+}
+
+.input-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 15px;
+}
+
+.input-button:hover {
+    background-color: #45a049;
+}
+
+#elevationChart {
+    margin-top: 20px;
+    width: 100%;
+    height: 200px; /* Sesuaikan tinggi grafik */
+}

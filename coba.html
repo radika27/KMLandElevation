@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KML Route Viewer (Gratis dengan Leaflet dan ArcGIS Satelit)</title>
+  <!-- Memuat stylesheet Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <!-- Memuat library Leaflet -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- Memuat library toGeoJSON untuk konversi KML ke GeoJSON -->
+  <script src="https://unpkg.com/@tmcw/togeojson@5.8.1/dist/togeojson.umd.js"></script>
+  <!-- Memuat library Leaflet Omnivore -->
+  <script src="https://unpkg.com/leaflet-omnivore@0.3.4/leaflet-omnivore.min.js"></script>
+  <!-- Memuat library Chart.js untuk grafik elevasi -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Memuat file script.js dll -->
+</script>
+  <link rel="stylesheet" href="style.css">  
+  <script src="script.js" defer></script>
+  <style>
+    #map {
+      height: 400px;
+      width: 100%;
+    }
+    #elevationChart {
+      height: 200px;
+      width: 100%;
+    }
+    .input-section {
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="input-section">
+    <label id="fileNameLabel">(NAMA FILE DI KML)</label>
+    <p>Unggah file KML kamu dengan mudah, lalu biarkan peta kami menampilkan rute, area, dan titik spesial yang kamu miliki. Jelajahi peta interaktif yang menarik dan temukan detail dari perjalanan atau lokasi favoritmu secara intuitif dan menyenangkan!</p>
+    <input type="file" id="kmlFile" accept=".kml" onchange="updateFileName()">
+    <button onclick="loadKML()">INPUT KML</button>
+  </div>
+  <div id="map"></div>
+  <canvas id="elevationChart"></canvas>
+</body>
+</html>
