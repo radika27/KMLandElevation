@@ -1,45 +1,61 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KML Route Viewer (Gratis dengan Leaflet dan ArcGIS Satelit)</title>
-  <!-- Memuat stylesheet Leaflet -->
+  <title>Peta Interaktif KML</title>
+  <!-- Leaflet CSS untuk peta -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <!-- Memuat library Leaflet -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <!-- Memuat library toGeoJSON untuk konversi KML ke GeoJSON -->
-  <script src="https://unpkg.com/@tmcw/togeojson@5.8.1/dist/togeojson.umd.js"></script>
-  <!-- Memuat library Leaflet Omnivore -->
-  <script src="https://unpkg.com/leaflet-omnivore@0.3.4/leaflet-omnivore.min.js"></script>
-  <!-- Memuat library Chart.js untuk grafik elevasi -->
+  <!-- Google Fonts untuk tipografi -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+  <!-- Chart.js untuk grafik elevasi -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- Memuat file script.js dll -->
-</script>
-  <link rel="stylesheet" href="style.css">  
-  <script src="script.js" defer></script>
-  <style>
-    #map {
-      height: 400px;
-      width: 100%;
-    }
-    #elevationChart {
-      height: 200px;
-      width: 100%;
-    }
-    .input-section {
-      margin: 10px 0;
-    }
-  </style>
+  <!-- toGeoJSON untuk konversi KML ke GeoJSON -->
+  <script src="https://unpkg.com/@tmcw/togeojson@5.8.1/dist/togeojson.umd.js"></script>
+  <!-- Leaflet JS untuk peta -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- File CSS kustom -->
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="input-section">
-    <label id="fileNameLabel">(NAMA FILE DI KML)</label>
-    <p>Unggah file KML kamu dengan mudah, lalu biarkan peta kami menampilkan rute, area, dan titik spesial yang kamu miliki. Jelajahi peta interaktif yang menarik dan temukan detail dari perjalanan atau lokasi favoritmu secara intuitif dan menyenangkan!</p>
-    <input type="file" id="kmlFile" accept=".kml" onchange="updateFileName()">
-    <button onclick="loadKML()">INPUT KML</button>
+  <div class="main-container">
+    <!-- Bagian peta -->
+    <section class="map-section">
+      <div id="map"></div>
+    </section>
+
+    <!-- Bagian informasi dan unggah file -->
+    <section class="info-section">
+      <div class="file-info">
+        <label id="fileNameLabel" class="file-label">(NAMA FILE DI KML)</label>
+       <p>Unggah file KML kamu dengan mudah, lalu biarkan peta kami menampilkan rute, area, dan titik spesial yang kamu miliki. Jelajahi peta interaktif yang menarik dan temukan detail dari perjalanan atau lokasi favoritmu secara intuitif dan menyenangkan!</p>
+
+      </div>
+      <div class="upload-container">
+        <button class="input-button" onclick="triggerFileInput()">INPUT KML</button>
+        <input type="file" id="kmlFile" accept=".kml" style="display: none;" onchange="processKML()">
+      </div>
+      <div class="layout-container">
+        <div class="stats-section">
+          <div class="stats-container">
+            <div class="stat-box">Elevasi <span id="elevation">0 Mdpl</span></div>
+            <div class="stat-box">Jarak <span id="distance">0 Km</span></div>
+            <div class="stat-box">Waktu <span id="duration">0 Jam</span></div>
+            <div class="stat-box">Kalori <span id="calories">0 Kal</span></div>
+          </div>
+        </div>
+        <div class="chart-section">
+          <canvas id="elevationChart"></canvas>
+          <div class="elevation-info">
+            <span id="elevationValue">0 m</span>
+            <span id="distanceValue">0 km</span>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
-  <div id="map"></div>
-  <canvas id="elevationChart"></canvas>
+
+  <!-- File JavaScript kustom -->
+  <script src="script.js"></script>
 </body>
 </html>
