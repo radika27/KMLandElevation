@@ -117,7 +117,22 @@ body {
   display: flex;
   justify-content: space-around;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 0px;
+  margin: 5px 0;
+}
+
+.stats-container .stat-box {
+  font-family: 'Arial', sans-serif; /* Jenis font */
+  font-size: 14px; /* Ukuran tulisan */
+  color: #333; /* Warna tulisan */
+}
+
+/* Pastikan span di dalam stat-box juga terpengaruh */
+.stats-container .stat-box span {
+  font-family: 'Arial', sans-serif;
+  font-weight: bold;
+  font-size: 20px;
+  color: #1751be;
 }
 
 .stat-box {
@@ -155,12 +170,13 @@ body {
 
 .chart-marker {
   position: absolute;
-  width: 2px;
-  background-color: blue;
-  height: 200px; /* Sesuaikan dengan tinggi grafik */
-  pointer-events: none;
-  top: 0;
-  left: 0;
+  width: 10px; /* Ukuran titik */
+  height: 10px;
+  background-color: red; /* Warna titik */
+  border-radius: 50%; /* Bentuk lingkaran */
+  top: 50%; /* Posisi vertikal di tengah */
+  transform: translate(-50%, -50%); /* Pusatkan titik */
+  pointer-events: none; /* Pastikan titik tidak mengganggu interaksi mouse */
   z-index: 10;
 }
 
@@ -178,6 +194,7 @@ body {
   border-radius: 4px;
   border: 1px solid #ddd;
 }
+
 
 /* Responsif untuk layar kecil */
 @media (max-width: 768px) {
