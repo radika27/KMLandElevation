@@ -269,70 +269,96 @@ function processKML() {
         }
       });
 
-      // Tambahkan event listener untuk interaksi marker biru yang bergerak
-      const canvas = document.getElementById('elevationChart');
-      let isDragging = false;
+      let isPositionLocked = false; // Variabel untuk menandakan posisi terkunci
+let lockedIndex = 0; // Indeks koordinat saat posisi terkunci
 
-      canvas.addEventListener('mousedown', (e) => {
-        isDragging = true;
-        updateMarkerPosition(e);
-      });
+// Event listener untuk hover (mousemove)
+const canvas = document.getElementById('elevationChart');
+canvas.addEventListener('mousemove', (e) => {
+  if (!isPositionLocked) {
+    updateMarkerPosition(e);
+  }
+});
 
-      canvas.addEventListener('mousemove', (e) => {
-        if (isDragging) {
-          updateMarkerPosition(e);
-        }
-      });
+// Event listener untuk klik untuk mengunci posisi
+canvas.addEventListener('click', (e) => {
+  isPositionLocked = true;
+  updateMarkerPosition(e); // Perbarui posisi berdasarkan klik
+});
 
-      canvas.addEventListener('mouseup', () => {
-        isDragging = false;
-      });
+// Event listener untuk melepas kunci saat mouse keluar (opsional)
+canvas.addEventListener('mouseleave', () => {
+  if (isPositionLocked) {
+    // Tetap tampilkan posisi terkunci
+    const coord = coordinates[lockedIndex];
+    const distance = cumulativeDistances[lockedIndex];
+    const chartArea = chart.chartArea;
+    const chartWidth = chartArea.right - chartArea.left;
+    const percentage = lockedIndex / (coordinates.length - 1);
+    const xPos = chartArea.left + (percentage * chartWidth);
+    chartMarker.style.left = `${xPos}px`;
 
-      canvas.addEventListener('mouseleave', () => {
-        isDragging = false;
-        chartMarker.style.left = '0px'; // Reset posisi marker saat kursor keluar
-        if (tempMarker) map.removeLayer(tempMarker);
-        document.getElementById('elevationValue').textContent = '0 m';
-        document.getElementById('distanceValue').textContent = '0 km';
-      });
+    if (tempMarker) map.removeLayer(tempMarker);
+    tempMarker = L.marker([coord.lat, coord.lng], {
+      icon: L.icon({
+        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41]
+      })
+    }).addTo(map);
+    map.setView([coord.lat, coord.lng], 15);
+    document.getElementById('elevationValue').textContent = `${Math.round(coord.alt)} m`;
+    document.getElementById('distanceValue').textContent = `${distance.toFixed(1)} km`;
+  } else {
+    chartMarker.style.left = '0px'; // Reset jika tidak terkunci
+    if (tempMarker) map.removeLayer(tempMarker);
+    document.getElementById('elevationValue').textContent = '0 m';
+    document.getElementById('distanceValue').textContent = '0 km';
+  }
+});
 
-      function updateMarkerPosition(e) {
-        const rect = canvas.getBoundingClientRect();
-        const x = e.clientX - rect.left; // Posisi X relatif terhadap canvas
-        const chartArea = chart.chartArea;
-        const chartWidth = chartArea.right - chartArea.left;
+// Fungsi updateMarkerPosition diperbarui
+function updateMarkerPosition(e) {
+  const rect = canvas.getBoundingClientRect();
+  const x = e.clientX - rect.left; // Posisi X relatif terhadap canvas
+  const chartArea = chart.chartArea;
+  const chartWidth = chartArea.right - chartArea.left;
 
-        // Pastikan X berada dalam batas chart
-        const boundedX = Math.max(chartArea.left, Math.min(x, chartArea.right));
-        const percentage = (boundedX - chartArea.left) / chartWidth;
-        const index = Math.round(percentage * (coordinates.length - 1));
+  // Pastikan X berada dalam batas chart
+  const boundedX = Math.max(chartArea.left, Math.min(x, chartArea.right));
+  const percentage = (boundedX - chartArea.left) / chartWidth;
+  const index = Math.round(percentage * (coordinates.length - 1));
 
-        // Pastikan indeks valid
-        if (index >= 0 && index < coordinates.length) {
-          const coord = coordinates[index];
-          const distance = cumulativeDistances[index];
+  // Pastikan indeks valid
+  if (index >= 0 && index < coordinates.length) {
+    const coord = coordinates[index];
+    const distance = cumulativeDistances[index];
 
-          // Perbarui posisi marker di grafik
-          chartMarker.style.left = `${boundedX}px`;
+    // Perbarui posisi marker di grafik
+    chartMarker.style.left = `${boundedX}px`;
 
-          // Perbarui marker di peta
-          if (tempMarker) map.removeLayer(tempMarker);
-          tempMarker = L.marker([coord.lat, coord.lng], {
-            icon: L.icon({
-              iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
-              iconSize: [25, 41],
-              iconAnchor: [12, 41]
-            })
-          }).addTo(map);
-          map.setView([coord.lat, coord.lng], 15);
+    // Perbarui marker di peta
+    if (tempMarker) map.removeLayer(tempMarker);
+    tempMarker = L.marker([coord.lat, coord.lng], {
+      icon: L.icon({
+        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41]
+      })
+    }).addTo(map);
+    map.setView([coord.lat, coord.lng], 15);
 
-          // Perbarui teks jarak dan elevasi
-          document.getElementById('elevationValue').textContent = `${Math.round(coord.alt)} m`;
-          document.getElementById('distanceValue').textContent = `${distance.toFixed(1)} km`;
+    // Perbarui teks jarak dan elevasi
+    document.getElementById('elevationValue').textContent = `${Math.round(coord.alt)} m`;
+    document.getElementById('distanceValue').textContent = `${distance.toFixed(1)} km`;
 
-          console.log('Index:', index, 'Distance:', distance, 'Elevation:', coord.alt);
-        }
-      }
+    if (isPositionLocked) {
+      lockedIndex = index; // Simpan indeks saat posisi terkunci
+    }
+
+    console.log('Index:', index, 'Distance:', distance, 'Elevation:', coord.alt);
+  }
+}
 
       console.log('Pemrosesan selesai:', file.name);
     } catch (error) {
